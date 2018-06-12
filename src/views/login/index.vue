@@ -15,10 +15,15 @@
                 </Input>
             </Form-item>
             <Form-item>
-                <Button type="primary" @click="handleLogin('loginForm')" long>登录</Button>
+                <Button type="primary" @click="handleLogin('loginForm')" long>{{type}}</Button>
             </Form-item>
-            <div class='tips'>admin账号为:admin@oa.com 密码123456</div>
-            <div class='tips'>editor账号:editor@oa.com 密码123456</div>
+            <div class="center">
+                <div class='tips'>{{tips}}
+                    <a @click="change">{{tip}}</a>
+                </div>
+                <div class='tips'>admin账号为:admin@oa.com 密码123456</div>
+                <div class='tips'>editor账号:editor@oa.com 密码123456</div>
+            </div>
         </Form>
 
     </div>
@@ -54,9 +59,19 @@
                 }
             };
             return {
+                type: '',
+                type1: '登陆',
+                type2: '注册',
+                tips: '',
+                tips1: '没有账号？',
+                tips2: '已有账号？',
+                tip: '',
+                tip1: '点击注册',
+                tip2: '点击登陆',
+
                 loginForm: {
                     email: '',
-                    password: ''
+                    password: '',
                 },
                 loginRules: {
                     email: [
@@ -130,7 +145,7 @@
                             this.$Message.success('登录成功');
 
                             this.loading = false;
-                            this.$router.push({path: '/'});
+                            this.$router.push({ path: '/' });
                         }).catch(err => {
                             this.$message.error(err);
                             this.loading = false;
@@ -141,7 +156,23 @@
                     }
                 });
             },
+            change() {
+                if (this.type === this.type1) {
+                    this.type = this.type2;
+                    this.tips = this.tips2;
+                    this.tip = this.tip2;
+                } else {
+                    this.type = this.type1;
+                    this.tips = this.tips1;
+                    this.tip = this.tip1;
+                }
+            }
         },
+        created() {
+            this.type = this.type1;
+            this.tips = this.tips1;
+            this.tip = this.tip1;
+        }
     }
 
 

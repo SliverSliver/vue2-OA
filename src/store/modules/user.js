@@ -71,7 +71,7 @@ const user = {
           console.log(response.data);
           Cookies.set('Admin-Token', response.data.token);
           commit('SET_TOKEN', data.token);
-          commit('SET_EMAIL', email);
+          commit('SET_ROLES', email);
           resolve();
         }).catch(error => {
           reject(error);
