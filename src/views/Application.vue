@@ -86,14 +86,18 @@
     },//data
     methods: {
       handleSubmit(name) {
-        let that = this;
-
         this.$refs[name].validate((valid) => {
           if (valid) {
+            let start = this.formValidate.start;
+            let end = this.formValidate.end;
+            let startDate = start.getFullYear() + "-" + (start.getMonth() + 1) + "-" + start.getDate();
+            let endDate = end.getFullYear() + "-" + (end.getMonth() + 1) + "-" + end.getDate();
+            console.log(startDate);
+            console.log(endDate);
             let params = {
-              'type': that.formValidate.type,
-              'beginDate': that.formValidate.start,
-              'endDate': that.formValidate.end,
+              'type': this.formValidate.type,
+              'beginDate': startDate,
+              'endDate': endDate,
             };
             this.$axiso.post('http://localhost:8081/applications', params, {
               headers: {
@@ -104,9 +108,9 @@
             }).then((response) => {
               if (response.data.code === 200) {
                 this.$Message.success('提交成功!');
+                this.getApplications();
               } else {
-                this.$Message.error('未知错误!');
-                console.log(response.msg);
+                this.$Message.error(response.data.msg);
               }
             }).catch((error) => {
               console.log(error);
@@ -128,59 +132,54 @@
         this.formDynamic.items.splice(index, 1);
       },
 
-      submit() {
-        this.$axiso.get('/api/getCount').then((response) => {
-          let data = response.data;
+      getApplications() {
+        this.$axiso.get('http://localhost:8081/applications', {
+          headers: {
+            'token': this.$store.getters.token,
+          },
+          withCredentials: true,
+        }).then((response) => {
+          if (response.data.code === 200) {
+            let data = response.data.data;
 
-          this.inforList = data.inforList;
+            for (let k in data) {
+              switch (data[k].type) {
+                case 1:
+                  data[k].type = '请假';
+                  break;
+                case 2:
+                  data[k].type = '出差';
+                  break;
+                case 3:
+                  data[k].type = '加班';
+                  break;
+              }
+              switch (data[k].result) {
+                case 0:
+                  data[k].result = '待审核';
+                  break;
+                case 1:
+                  data[k].result = '已通过';
+                  break;
+                case 2:
+                  data[k].result = '未通过';
+                  break;
+              }
+
+              this.inforList = data;
+
+              console.log(data, 'data');
+            }
+          } else {
+            this.$Message.error(response.data.msg);
+          }
         }).catch((error) => {
           console.log(error);
         });
       },
     },
     created() {
-      let that = this;
-
-      this.$axiso.get('http://localhost:8081/applications', {
-        headers: {
-          'token': this.$store.getters.token,
-        },
-        withCredentials: true,
-      }).then((response) => {
-
-        let data = response.data.data;
-
-        for (let k in data) {
-          switch (data[k].type) {
-            case 1:
-              data[k].type = '请假';
-              break;
-            case 2:
-              data[k].type = '出差';
-              break;
-            case 3:
-              data[k].type = '加班';
-              break;
-          }
-          switch (data[k].result) {
-            case 0:
-              data[k].result = '待审核';
-              break;
-            case 1:
-              data[k].result = '已通过';
-              break;
-            case 2:
-              data[k].result = '未通过';
-              break;
-          }
-
-          that.inforList = data;
-
-          console.log(data, 'data');
-        }
-      }).catch((error) => {
-        console.log(error);
-      });
+      this.getApplications();
 
     },
   };

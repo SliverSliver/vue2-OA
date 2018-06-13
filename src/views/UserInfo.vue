@@ -41,20 +41,20 @@
         inforList: [
           {
             type: '缺勤',
-            time: ''
+            time: '',
           }, {
             type: '出勤',
-            time: ''
+            time: '',
           }, {
             type: '请假',
-            time: ''
+            time: '',
           }, {
             type: '早退',
-            time: ''
+            time: '',
           }, {
             type: '出差',
-            time: ''
-          }
+            time: '',
+          },
         ],
 
         columns1: [
@@ -89,11 +89,15 @@
         },
         withCredentials: true,
       }).then((response) => {
-        let data = response.data.data;
-        for (let key in data) {
-          data[key].year = data[key].year + '-' + data[key].month + '-' + data[key].day;
+        if (response.data.code === 200) {
+          let data = response.data.data;
+          for (let key in data) {
+            data[key].year = data[key].year + '-' + data[key].month + '-' + data[key].day;
+          }
+          that.inforList1 = data;
+        } else {
+          this.$Message.error(response.data.msg);
         }
-        that.inforList1 = data;
       }).catch((error) => {
         console.log(error);
       });
@@ -104,12 +108,16 @@
         },
         withCredentials: true,
       }).then((response) => {
-        let data = response.data.data;
-        this.inforList[0].time = data.absenceDays;
-        this.inforList[1].time = data.attendanceDays;
-        this.inforList[2].time = data.leaveDays;
-        this.inforList[3].time = data.leaveEarlyDays;
-        this.inforList[4].time = data.travelingDays;
+        if (response.data.code === 200) {
+          let data = response.data.data;
+          this.inforList[0].time = data.absenceDays;
+          this.inforList[1].time = data.attendanceDays;
+          this.inforList[2].time = data.leaveDays;
+          this.inforList[3].time = data.leaveEarlyDays;
+          this.inforList[4].time = data.travelingDays;
+        } else {
+          this.$Message.error(response.data.msg);
+        }
       }).catch((error) => {
         console.log(error);
       });

@@ -32,128 +32,132 @@
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-                disabled1: true,
-                disabled2: true,
+  export default {
+    data() {
+      return {
+        disabled1: true,
+        disabled2: true,
 
-                columns: [
-                    {
-                        title: '日期',
-                        key: 'year',
-                    },
-                    {
-                        title: '签到时间',
-                        key: 'beginTime',
-                    },
-                    {
-                        title: '签退时间',
-                        key: 'endTime',
-                    },
-                ],
-                inforList: [],
-            };
-        },
-        methods: {
-            test_logout() {
-                this.$store.dispatch('LogOut').then(() => {
-                    this.$router.push({path: '/login'});
-                }).catch(err => {
-                    this.$message.error(err);
-                });
-            },
+        columns: [
+          {
+            title: '日期',
+            key: 'year',
+          },
+          {
+            title: '签到时间',
+            key: 'beginTime',
+          },
+          {
+            title: '签退时间',
+            key: 'endTime',
+          },
+        ],
+        inforList: [],
+      };
+    },
+    methods: {
+      test_logout() {
+        this.$store.dispatch('LogOut').then(() => {
+          this.$router.push({path: '/login'});
+        }).catch(err => {
+          this.$message.error(err);
+        });
+      },
 
-            attendances1() {
-                this.$axiso.put('http://localhost:8081/attendances', {}, {
-                    headers: {
-                        'token': this.$store.getters.token,
-                    },
-                    withCredentials: true,
-                }).then((response) => {
-                    let data = response.data;
-                    if (data.code === 200) {
-                        this.$Message.success('签到成功');
-                        this.disabled1 = true;
-                        this.disabled2 = false;
-                    } else {
-                        this.$Message.success('签到失败');
-                    }
-                    this.getAttendances();
-                }).catch((error) => {
-                    console.log(error);
-                });
-            },
+      attendances1() {
+        this.$axiso.put('http://localhost:8081/attendances', {}, {
+          headers: {
+            'token': this.$store.getters.token,
+          },
+          withCredentials: true,
+        }).then((response) => {
+          let data = response.data;
+          if (data.code === 200) {
+            this.$Message.success('签到成功');
+            this.disabled1 = true;
+            this.disabled2 = false;
+          } else {
+            this.$Message.error(data.msg);
+          }
+          this.getAttendances();
+        }).catch((error) => {
+          console.log(error);
+        });
+      },
 
-            attendances2() {
-                this.$axiso.delete('http://localhost:8081/attendances', {
-                    headers: {
-                        'token': this.$store.getters.token,
-                    },
-                    withCredentials: true,
-                }).then((response) => {
-                    let data = response.data;
-                    if (data.code === 200) {
-                        this.$Message.success('签退成功');
-                        this.disabled1 = true;
-                        this.disabled2 = true;
-                    } else {
-                        this.$Message.success('签退失败');
-                    }
-                    this.getAttendances();
-                }).catch((error) => {
-                    console.log(error);
-                });
-            },
+      attendances2() {
+        this.$axiso.delete('http://localhost:8081/attendances', {
+          headers: {
+            'token': this.$store.getters.token,
+          },
+          withCredentials: true,
+        }).then((response) => {
+          let data = response.data;
+          if (data.code === 200) {
+            this.$Message.success('签退成功');
+            this.disabled1 = true;
+            this.disabled2 = true;
+          } else {
+            this.$Message.error(data.msg);
+          }
+          this.getAttendances();
+        }).catch((error) => {
+          console.log(error);
+        });
+      },
 
-            getAttendancesCheck() {
-                this.$axiso.get('http://localhost:8081/attendances/check', {
-                    headers: {
-                        'token': this.$store.getters.token,
-                    },
-                    withCredentials: true,
-                }).then((response) => {
-                    let data = response.data.data;
-                    if (data === 0) {
-                        this.disabled1 = false;
-                    } else if (data === 1) {
-                        this.disabled2 = false;
-                    }
-                    console.log(data);
-                }).catch((error) => {
-                    console.log(error);
-                });
-            },
-
-            getAttendances() {
-                this.$axiso.get('http://localhost:8081/attendances/', {
-                    headers: {
-                        'token': this.$store.getters.token,
-                    },
-                    withCredentials: true,
-                }).then((response) => {
-                    let data = response.data.data;
-                    for (let key in data) {
-                        data[key].year = data[key].year + '-' + data[key].month + '-' + data[key].day;
-                    }
-                    this.inforList = data;
-                    console.log(data);
-                }).catch((error) => {
-                    console.log(error);
-                });
+      getAttendancesCheck() {
+        this.$axiso.get('http://localhost:8081/attendances/check', {
+          headers: {
+            'token': this.$store.getters.token,
+          },
+          withCredentials: true,
+        }).then((response) => {
+          if (response.data.code === 200) {
+            let data = response.data.data;
+            if (data === 0) {
+              this.disabled1 = false;
+            } else if (data === 1) {
+              this.disabled2 = false;
             }
-        },
+          } else {
+            this.$Message.error(response.data.msg);
+          }
+          console.log(data);
+        }).catch((error) => {
+          console.log(error);
+        });
+      },
 
-        created() {
-            this.getAttendancesCheck();
+      getAttendances() {
+        this.$axiso.get('http://localhost:8081/attendances/', {
+          headers: {
+            'token': this.$store.getters.token,
+          },
+          withCredentials: true,
+        }).then((response) => {
+          let data = response.data.data;
+          for (let key in data) {
+            data[key].year = data[key].year + '-' + data[key].month + '-' + data[key].day;
+          }
+          this.inforList = data;
+          console.log(data);
+        }).catch((error) => {
+          console.log(error);
+        });
+      },
+    },
 
-            this.getAttendances();
-        },
-        mounted() {
-            const token = this.$store.getters.token;
-        },
+    created() {
+      this.getAttendancesCheck();
 
-    };
+      this.getAttendances();
+    },
+    mounted() {
+      const token = this.$store.getters.token;
+    },
+
+  };
 </script>
 
 <style type="text/css" scoped>

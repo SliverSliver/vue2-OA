@@ -22,93 +22,95 @@
 </template>
 
 <script>
-    import Vue from 'vue'
+  import Vue from 'vue';
 
-    export default {
-        data() {
-            return {
-                tableData: [],
+  export default {
+    data() {
+      return {
+        tableData: [],
 
-                columnss: [
-                    {
-                        field: 'username',
-                        title: '姓名',
-                        width: 80,
-                        titleAlign: 'center',
-                        columnAlign: 'center',
-                        isResize: true
-                    },
-                    {
-                        field: 'custome-adv',
-                        title: '操作',
-                        width: 200,
-                        titleAlign: 'center',
-                        columnAlign: 'center',
-                        componentName: 'user-operation',
-                        isResize: true
-                    }
-                ]
-            }
+        columnss: [
+          {
+            field: 'username',
+            title: '姓名',
+            width: 80,
+            titleAlign: 'center',
+            columnAlign: 'center',
+            isResize: true,
+          },
+          {
+            field: 'custome-adv',
+            title: '操作',
+            width: 200,
+            titleAlign: 'center',
+            columnAlign: 'center',
+            componentName: 'user-operation',
+            isResize: true,
+          },
+        ],
+      };
+    },
+    components: {},
+    methods: {
+      customCompFunc(params) {
+        console.log(params, 'param');
+        this.$router.push({
+          path: '/userInfo',
+          name: '出勤记录',
+          params: {
+            data: params.rowData,
+          },
+        });
+      },
+    },
+    created() {
+      let that = this;
+
+      this.$axiso.get('http://localhost:8081/admin/users', {
+        headers: {
+          'token': this.$store.getters.token,
         },
-        components: {},
-        methods: {
-            customCompFunc(params) {
-                console.log(params, 'param');
-                this.$router.push({
-                    path: '/userInfo',
-                    name: '出勤记录',
-                    params: {
-                        data: params.rowData,
-                    }
-                })
-            }
-        },
-        created() {
-            let that = this;
-
-            this.$axiso.get('http://localhost:8081/admin/users', {
-              headers: {
-                'token': this.$store.getters.token,
-              },
-              withCredentials: true,
-            }).then((response) => {
-
-                let data = response.data;
-                that.tableData = data.data;
-
-                console.log(data, 'data');
-
-            }).catch((error) => {
-                console.log(error)
-            });
-
+        withCredentials: true,
+      }).then((response) => {
+        if (response.data.code === 200) {
+          let data = response.data;
+          that.tableData = data.data;
+        } else {
+          this.$Message.error(response.data.msg);
         }
-    }
+        console.log(data, 'data');
 
-    // 自定义列组件
-    Vue.component('user-operation', {
-        template:
-            `<span>
+      }).catch((error) => {
+        console.log(error);
+      });
+
+    },
+  };
+
+  // 自定义列组件
+  Vue.component('user-operation', {
+    template:
+        `<span>
             <a href="" @click.stop.prevent="update(rowData,index)">查看信息</a>
             </span>`,
-        props: {
-            rowData: {
-                type: Object
-            },
-            field: {
-                type: String
-            },
-            index: {
-                type: Number
-            }
-        },
-        methods: {
-            update() {
-                let params = {type: 'view', rowData: this.rowData, index: this.index};
-                this.$emit('on-custom-comp', params);
-            },
-        }
-    })
+    props: {
+      rowData: {
+        type: Object,
+      },
+      field: {
+        type: String,
+      },
+      index: {
+        type: Number,
+      },
+    },
+    methods: {
+      update() {
+        let params = {type: 'view', rowData: this.rowData, index: this.index};
+        this.$emit('on-custom-comp', params);
+      },
+    },
+  });
 </script>
 
 <!-- Add "scoped " attribute to limit CSS to this component only -->

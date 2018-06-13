@@ -63,12 +63,16 @@
         },
         withCredentials: true,
       }).then((response) => {
-        let data = response.data.data;
-        this.inforList[0].time = data.absenceDays;
-        this.inforList[1].time = data.attendanceDays;
-        this.inforList[2].time = data.leaveDays;
-        this.inforList[3].time = data.leaveEarlyDays;
-        this.inforList[4].time = data.travelingDays;
+        if (response.data.code === 200) {
+          let data = response.data.data;
+          this.inforList[0].time = data.absenceDays;
+          this.inforList[1].time = data.attendanceDays;
+          this.inforList[2].time = data.leaveDays;
+          this.inforList[3].time = data.leaveEarlyDays;
+          this.inforList[4].time = data.travelingDays;
+        } else {
+          this.$Message.error(response.data.msg);
+        }
         console.log(data.inforList);
       }).catch((error) => {
         console.log(error);
