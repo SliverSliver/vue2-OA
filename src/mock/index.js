@@ -7,7 +7,7 @@ Mock.mock(/\/login\/loginbyemail/, 'post', loginAPI.loginByEmail);
 Mock.mock(/\/login\/logout/, 'post', loginAPI.logout);
 Mock.mock(/\/user\/info\.*/, 'get', loginAPI.getInfo);
 
-Mock.mock('/api/getCount', 'get', function () {
+Mock.mock(/\/api\/getCount/, 'get', function () {
     return {
         inforList: [
             {
@@ -29,7 +29,7 @@ Mock.mock('/api/getCount', 'get', function () {
     }
 });
 
-Mock.mock('/api/getDate', 'get', function () {
+Mock.mock(/\/api\/getDate/, 'get', function () {
     return {
         inforList: [
             {
@@ -48,7 +48,7 @@ Mock.mock('/api/getDate', 'get', function () {
     }
 });
 
-Mock.mock('/register', 'post', function () {
+Mock.mock(/\/register/, 'post', function () {
     return {
         "code": 200,
         "data": {
@@ -59,7 +59,7 @@ Mock.mock('/register', 'post', function () {
     }
 });
 
-Mock.mock('/login', 'post', function () {
+Mock.mock(/\/login/, 'post', function () {
     return {
         "code": 200,
         "data": {

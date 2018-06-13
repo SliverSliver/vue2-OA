@@ -22,7 +22,7 @@
                     <a @click="change">{{tip}}</a>
                 </div>
                 <div class='tips'>admin账号为:admin@oa.com 密码123456</div>
-                <div class='tips'>editor账号:editor@oa.com 密码123456</div>
+                <div class='tips'>normal账号:normal@oa.com 密码123456</div>
             </div>
         </Form>
 
@@ -147,7 +147,7 @@
                             this.loading = false;
                             this.$router.push({ path: '/' });
                         }).catch(err => {
-                            this.$message.error(err);
+                            this.$Message.error(err);
                             this.loading = false;
                         });
                     } else {

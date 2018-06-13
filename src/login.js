@@ -22,11 +22,7 @@ router.beforeEach((to, from, next) => {
                 store.dispatch('GetInfo').then(res => { // 拉取user_info
                     const roles = res.data.role;
 
-                    console.log('data.role!!');
-
                     store.dispatch('GenerateRoutes', {roles}).then(() => { // 生成可访问的路由表
-
-                        console.log('GenerateRoutes!!');
                         router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
                         next({...to}) // hack方法 确保addRoutes已完成
                     })
@@ -42,8 +38,6 @@ router.beforeEach((to, from, next) => {
 
                 if (hasPermission(store.getters.roles, to.meta.role)) {
                     next(); //
-
-                    console.log("has userinfo")
                 } else {
                     next({path: '/', query: {noGoBack: true}})
                 }

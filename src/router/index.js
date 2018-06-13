@@ -48,10 +48,10 @@ export const asyncRouterMap = [
         component: Full,
         hidden: false,
         children: [
-            {path: '/dashboard', name: '主页', icon: 'speedometer', component: _import('Dashboard')},
-            {path: '/application', name: '申请', icon: 'ios-clock-outline', component: _import('Application')},
-            {path: '/attendance', name: '出勤统计', icon: 'ios-list-outline', component: _import('Attendance')},
-            // {path: '/table', name: '表格综合实例', icon: 'ios-paper', component: _import('Table'), meta: {role: ['admin']}},
+            {path: '/dashboard', name: '主页', icon: 'speedometer', component: _import('Dashboard'), meta: {role: ['normal']}},
+            {path: '/application', name: '申请', icon: 'ios-clock-outline', component: _import('Application'), meta: {role: ['normal']}},
+            {path: '/attendance', name: '出勤统计', icon: 'ios-list-outline', component: _import('Attendance'), meta: {role: ['normal']}},
+            {path: '/allUsers', name: '查看所有用户', icon: 'ios-paper', component: _import('AllUsers'), meta: {role: ['admin']}},
         ]
 
     },
