@@ -4,8 +4,8 @@
             <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
                 <Form-item label="申请类别" prop="type">
                     <Radio-group v-model="formValidate.type">
-                        <Radio label="1">出差</Radio>
-                        <Radio label="2">请假</Radio>
+                        <Radio label="1">请假</Radio>
+                        <Radio label="2">出差</Radio>
                         <Radio label="3">加班</Radio>
                     </Radio-group>
                 </Form-item>
@@ -90,13 +90,19 @@
 
         this.$refs[name].validate((valid) => {
           if (valid) {
-            let params = new URLSearchParams();
-            params.append('type', that.formValidate.type);
-            params.append('beginDate', that.formValidate.start);
-            params.append('endDate', that.formValidate.end);
-            this.$axiso.post('/application', params,
-            ).then((response) => {
-              if (response.code === 200) {
+            let params = {
+              'type': that.formValidate.type,
+              'beginDate': that.formValidate.start,
+              'endDate': that.formValidate.end,
+            };
+            this.$axiso.post('http://localhost:8081/applications', params, {
+              headers: {
+                'token': this.$store.getters.token,
+                'Content-Type': 'application/json',
+              },
+              withCredentials: true,
+            }).then((response) => {
+              if (response.data.code === 200) {
                 this.$Message.success('提交成功!');
               } else {
                 this.$Message.error('未知错误!');
