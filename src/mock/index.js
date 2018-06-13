@@ -10,22 +10,22 @@ Mock.mock(/\/user\/info\.*/, 'get', loginAPI.getInfo);
 Mock.mock(/\/api\/getCount/, 'get', function () {
     return {
         inforList: [
-            {
-                type: '出勤天数',
-                time: '5'
-            }, {
-                type: '迟到',
-                time: '0'
-            }, {
-                type: '早退',
-                time: '0'
-            }, {
-                type: '缺卡',
-                time: '0'
-            }, {
-                type: '其他',
-                time: '0'
-            }]
+          {
+            type: '出勤天数',
+            time: '5',
+          }, {
+            type: '迟到',
+            time: '0',
+          }, {
+            type: '早退',
+            time: '0',
+          }, {
+            type: '缺卡',
+            time: '0',
+          }, {
+            type: '其他',
+            time: '0',
+          }]
     }
 });
 

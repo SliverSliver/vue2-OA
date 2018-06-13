@@ -14,7 +14,7 @@ export function loginByEmail(email, password) {
     },
     url: '/login',
     method: 'post',
-    data
+    data,
   });
 }
 
@@ -23,8 +23,8 @@ export function logout(token) {
     url: '/users',
     method: 'delete',
     headers: {
-      'token': token
-    }
+      'token': token,
+    },
   });
 }
 
@@ -33,8 +33,8 @@ export function getInfo(token) {
     url: '/users',
     method: 'get',
     headers: {
-      'token': token
-    }
+      'token': token,
+    },
   });
 }
 

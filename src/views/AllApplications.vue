@@ -106,6 +106,7 @@
             let data = response.data;
             if (data.code === 200) {
               this.$Message.success('修改成功');
+              this.getApplications();
             } else {
               this.$Message.error(data.msg);
             }
@@ -119,52 +120,52 @@
             this.loading = false;
           });
         }
+      },
+      getApplications() {
+        this.$axiso.get('http://localhost:8081/admin/applications', {
+          headers: {
+            'token': this.$store.getters.token,
+          },
+          withCredentials: true,
+        }).then((response) => {
+          if (response.data.code === 200) {
+            let data = response.data.data;
+            for (let k in data) {
+              switch (data[k].type) {
+                case 1:
+                  data[k].type = '请假';
+                  break;
+                case 2:
+                  data[k].type = '出差';
+                  break;
+                case 3:
+                  data[k].type = '加班';
+                  break;
+              }
+              switch (data[k].result) {
+                case 0:
+                  data[k].result = '待审核';
+                  break;
+                case 1:
+                  data[k].result = '已通过';
+                  break;
+                case 2:
+                  data[k].result = '未通过';
+                  break;
+              }
 
+              this.tableData = data;
+            }
+          } else {
+            this.$Message.error(response.data.msg);
+          }
+        }).catch((error) => {
+          console.log(error);
+        });
       },
     },
     created() {
-      let that = this;
-
-      this.$axiso.get('http://localhost:8081/admin/applications', {
-        headers: {
-          'token': this.$store.getters.token,
-        },
-        withCredentials: true,
-      }).then((response) => {
-        if (response.data.code === 200) {
-          let data = response.data.data;
-          for (let k in data) {
-            switch (data[k].type) {
-              case 1:
-                data[k].type = '请假';
-                break;
-              case 2:
-                data[k].type = '出差';
-                break;
-              case 3:
-                data[k].type = '加班';
-                break;
-            }
-            switch (data[k].result) {
-              case 0:
-                data[k].result = '待审核';
-                break;
-              case 1:
-                data[k].result = '已通过';
-                break;
-              case 2:
-                data[k].result = '未通过';
-                break;
-            }
-
-            that.tableData = data;
-          }
-        } else {
-          this.$Message.error(response.data.msg);
-        }
-      }).catch((error) => {
-        console.log(error);
-      });
+      this.getApplications();
     },
   };
 

@@ -90,8 +90,8 @@
           if (valid) {
             let start = this.formValidate.start;
             let end = this.formValidate.end;
-            let startDate = start.getFullYear() + "-" + (start.getMonth() + 1) + "-" + start.getDate();
-            let endDate = end.getFullYear() + "-" + (end.getMonth() + 1) + "-" + end.getDate();
+            let startDate = start.getFullYear() + '-' + (start.getMonth() + 1) + '-' + start.getDate();
+            let endDate = end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate();
             console.log(startDate);
             console.log(endDate);
             let params = {
