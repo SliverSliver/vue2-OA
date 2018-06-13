@@ -48,10 +48,39 @@ export const asyncRouterMap = [
         component: Full,
         hidden: false,
         children: [
-            {path: '/dashboard', name: '主页', icon: 'speedometer', component: _import('Dashboard'), meta: {role: ['normal']}},
-            {path: '/application', name: '申请', icon: 'ios-clock-outline', component: _import('Application'), meta: {role: ['normal']}},
-            {path: '/attendance', name: '出勤统计', icon: 'ios-list-outline', component: _import('Attendance'), meta: {role: ['normal']}},
-            {path: '/allUsers', name: '查看所有用户', icon: 'ios-paper', component: _import('AllUsers'), meta: {role: ['admin']}},
+            {path: '/dashboard', name: '主页', icon: 'speedometer', component: _import('Dashboard')},
+            {path: '/application', name: '申请', icon: 'ios-clock-outline', component: _import('Application')},
+            {path: '/attendance', name: '出勤统计', icon: 'ios-list-outline', component: _import('Attendance')},
+        ]
+
+    },
+
+    {path: '*', redirect: '/pages/404', hidden: true}
+
+];
+
+export const adminRouterMap = [
+
+    {
+        path: '/',
+        redirect: '/allUsers',
+        name: '首页',
+        component: Full,
+        hidden: false,
+        children: [
+            {
+                path: '/allUsers', name: '查看所有用户', icon: 'speedometer', component: _import('AllUsers'),
+                meta: {role: ['admin']}
+            },
+            {
+                path: '/userInfo', name: '出勤记录', icon: 'ios-paper', component: _import('UserInfo'),
+                hidden: true,
+                meta: {role: ['admin']}
+            },
+            {
+                path: '/allApplications', name: '申请记录', icon: 'ios-paper', component: _import('AllApplications'),
+                meta: {role: ['admin']}
+            }
         ]
 
     },

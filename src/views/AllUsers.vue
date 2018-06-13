@@ -6,7 +6,15 @@
                 <h5>用户列表</h5>
             </Col>
             <Col>
-                <Table :columns="columns" :data="inforList"></Table>
+                <v-table
+                        is-horizontal-resize
+                        style="width:100%"
+                        :columns="columnss"
+                        :table-data="tableData"
+                        row-hover-color="#eee"
+                        row-click-color="#edf7ff"
+                        @on-custom-comp="customCompFunc"
+                ></v-table>
             </Col>
         </Row>
 
@@ -14,66 +22,88 @@
 </template>
 
 <script>
-    import Calendar from 'vue-calendar-component';
+    import Vue from 'vue'
 
     export default {
         data() {
             return {
-                columns: [
+                tableData: [],
+
+                columnss: [
                     {
-                        title: '类别',
-                        key: 'type'
+                        field: 'username',
+                        title: '姓名',
+                        width: 80,
+                        titleAlign: 'center',
+                        columnAlign: 'center',
+                        isResize: true
                     },
                     {
-                        title: '次数',
-                        key: 'time'
+                        field: 'custome-adv',
+                        title: '操作',
+                        width: 200,
+                        titleAlign: 'center',
+                        columnAlign: 'center',
+                        componentName: 'user-operation',
+                        isResize: true
                     }
-                ],
-                inforList: [],
+                ]
             }
         },
-        components: {
-            Calendar
-        },
+        components: {},
         methods: {
+            customCompFunc(params) {
+                console.log(params);
+                this.$router.push({
+                    path: '/userInfo',
+                    name: '出勤记录',
+                    params: {
+                        data: params.rowData,
+                    }
+                })
+            }
         },
         created() {
             let that = this;
 
-            function format(date, index) {
-                date = new Date(date);
-                return `${date.getFullYear()}/${date.getMonth() + 1}/${index}`;
-            }
+            this.$axiso.get('/admin/users').then((response) => {
 
-            this.$axiso.get('/api/getCount').then((response) => {
                 let data = response.data;
+                that.tableData = data.data;
 
-                that.inforList = data.inforList;
+                console.log(data, 'data');
 
-                console.log(data.inforList);
             }).catch((error) => {
                 console.log(error)
             });
 
-            this.arr = [{
-                date: format(new Date(), 1),
-                className: "mark1"
-            }, {
-                date: format(new Date(), 4),
-                className: "mark1"
-            }, {
-                date: format(new Date(), 5),
-                className: "mark1"
-            }, {
-                date: format(new Date(), 6),
-                className: "mark1"
-            }, {
-                date: format(new Date(), 7),
-                className: "mark2"
-            }]
         }
-
     }
+
+    // 自定义列组件
+    Vue.component('user-operation', {
+        template:
+            `<span>
+            <a href="" @click.stop.prevent="update(rowData,index)">查看信息</a>
+            </span>`,
+        props: {
+            rowData: {
+                type: Object
+            },
+            field: {
+                type: String
+            },
+            index: {
+                type: Number
+            }
+        },
+        methods: {
+            update() {
+                let params = {type: 'view', rowData: this.rowData};
+                this.$emit('on-custom-comp', params);
+            },
+        }
+    })
 </script>
 
 <!-- Add "scoped " attribute to limit CSS to this component only -->

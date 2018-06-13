@@ -70,5 +70,68 @@ Mock.mock(/\/login/, 'post', function () {
     }
 });
 
+Mock.mock(/\/admin\/users/, 'get', function () {
+    return {
+        "code": 200,
+        "data": [
+            {
+                "id": 203238190990102530,
+                "root": 0,
+                "username": "test"
+            },
+            {
+                "id": 203608302536495100,
+                "root": 0,
+                "username": "abcd"
+            },
+            {
+                "id": 203610673207447550,
+                "root": 0,
+                "username": "aaaaa"
+            }
+        ],
+        "msg": "success"
+    }
+});
+
+Mock.mock(/\/admin\/applications/, 'get', function () {
+    return {
+        "code": 200,
+        "data": [
+            {
+                "application": {
+                    "beginDate": "2018-06-15",
+                    "endDate": "2018-06-16",
+                    "id": 203239153591259140,
+                    "result": 1,
+                    "type": 1,
+                    "userId": 203238190990102530
+                },
+                "user": {
+                    "id": 203238190990102530,
+                    "root": 0,
+                    "username": "test"
+                }
+            },
+            {
+                "application": {
+                    "beginDate": "2018-06-15",
+                    "endDate": "2018-06-16",
+                    "id": 203676810729361400,
+                    "result": 0,
+                    "type": 1,
+                    "userId": 197905437511782400
+                },
+                "user": {
+                    "id": 197905437511782400,
+                    "root": 100,
+                    "username": "Soloist"
+                }
+            }
+        ],
+        "msg": "success"
+    }
+});
+
 
 export default Mock;
