@@ -32,7 +32,7 @@
 
             <Row>
                 <Col>
-                    <h5>近期出勤情况</h5>
+                    <h5>近期申请情况</h5>
                 </Col>
                 <Col>
                     <Table :columns="columns" :data="inforList"></Table>
@@ -150,7 +150,7 @@
 
         let data = response.data.data;
 
-        for (k in data) {
+        for (let k in data) {
           switch (data[k].type) {
             case 1:
               data[k].type = '请假';
