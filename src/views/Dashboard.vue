@@ -10,13 +10,10 @@
 
         <Row class="text-center">
 
-            <Button type="success" shape="circle" size="large" long>签到</Button>
+            <Button type="success" shape="circle" size="large" long disabled="disabled1">签到</Button>
             <br/>
             <br/>
-            <Button type="success" shape="circle" size="large" long disabled>签到</Button>
-            <br/>
-            <br/>
-            <Button type="error" shape="circle" size="large" long>签退</Button>
+            <Button type="error" shape="circle" size="large" long disabled="disabled2">签退</Button>
 
         </Row>
 
@@ -33,57 +30,80 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        columns: [
-          {
-            title: '日期',
-            key: 'year',
-          },
-          {
-            title: '签到时间',
-            key: 'beginTime',
-          },
-          {
-            title: '签退时间',
-            key: 'endTime',
-          },
-        ],
-        inforList: [],
-      };
-    },
-    methods: {
-      test_logout() {
-        this.$store.dispatch('LogOut').then(() => {
-          this.$router.push({path: '/login'});
-        }).catch(err => {
-          this.$message.error(err);
-        });
-      },
-    },
-    created() {
-      let that = this;
-      this.$axiso.get('http://localhost:8081/attendances/', {
-        headers: {
-          'token': this.$store.getters.token,
+    export default {
+        data() {
+            return {
+                disabled1: true,
+                disabled2: true,
+
+                columns: [
+                    {
+                        title: '日期',
+                        key: 'year',
+                    },
+                    {
+                        title: '签到时间',
+                        key: 'beginTime',
+                    },
+                    {
+                        title: '签退时间',
+                        key: 'endTime',
+                    },
+                ],
+                inforList: [],
+            };
         },
-        withCredentials: true,
-      }).then((response) => {
-        let data = response.data.data;
-        for (let key in data) {
-          data[key].year = data[key].year + '-' + data[key].month + '-' + data[key].day;
-        }
-        that.inforList = data;
-        console.log(data);
-      }).catch((error) => {
-        console.log(error);
-      });
-    },
-    mounted() {
-      const token = this.$store.getters.token;
-    },
-  };
+        methods: {
+            test_logout() {
+                this.$store.dispatch('LogOut').then(() => {
+                    this.$router.push({path: '/login'});
+                }).catch(err => {
+                    this.$message.error(err);
+                });
+            },
+        },
+        created() {
+            let that = this;
+
+            this.$axiso.get('http://localhost:8081/attendances/check', {
+                headers: {
+                    'token': this.$store.getters.token,
+                },
+                withCredentials: true,
+            }).then((response) => {
+                let data = response.data.data;
+                if (data === 0) {
+                    that.disabled1 = false;
+                    that.disabled2 = false;
+                } else if (data === 1) {
+                    that.disabled2 = false;
+                }
+                console.log(data);
+            }).catch((error) => {
+                console.log(error);
+            });
+
+            this.$axiso.get('http://localhost:8081/attendances/', {
+                headers: {
+                    'token': this.$store.getters.token,
+                },
+                withCredentials: true,
+            }).then((response) => {
+                let data = response.data.data;
+                for (let key in data) {
+                    data[key].year = data[key].year + '-' + data[key].month + '-' + data[key].day;
+                }
+                that.inforList = data;
+                console.log(data);
+            }).catch((error) => {
+                console.log(error);
+            });
+
+        },
+        mounted() {
+            const token = this.$store.getters.token;
+        },
+    };
 </script>
 
 <style type="text/css" scoped>
