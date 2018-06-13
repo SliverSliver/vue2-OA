@@ -6,7 +6,7 @@ const userMap = {
         token: 'admin',
         introduction: '我是超级管理员',
         name: 'Super Admin',
-        uid: '001'
+        uid: '000'
     },
     normal: {
         role: ['normal'],
@@ -17,8 +17,8 @@ const userMap = {
 
     },
     developer: {
-        role: ['develop'],
-        token: 'develop',
+        role: ['developer'],
+        token: 'developer',
         introduction: '我是开发',
         name: '工程师小王',
         uid: '003'

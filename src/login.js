@@ -15,19 +15,26 @@ const whiteList = ['/login', '/authredirect']; // 不重定向白名单
 router.beforeEach((to, from, next) => {
     NProgress.start(); // 开启Progress
     if (store.getters.token) { // 判断是否有token
+        console.log(store.getters.token, '   token');
         if (to.path === '/login') {
             next({path: '/'})
         } else {
             if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
+                console.log(store.getters.roles, '   roles');
                 store.dispatch('GetInfo').then(res => { // 拉取user_info
                     const roles = res.data.role;
+                    console.log(res.data.role, '   role');
 
                     store.dispatch('GenerateRoutes', {roles}).then(() => { // 生成可访问的路由表
                         router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
+
+                        console.log('getNowRoutes');
+
                         next({...to}) // hack方法 确保addRoutes已完成
                     })
 
-                }).catch(() => {
+                }).catch(error => {
+                    console.log(error, '   error');
                     store.dispatch('FedLogOut').then(() => {
                         next({path: '/login'})
                     })

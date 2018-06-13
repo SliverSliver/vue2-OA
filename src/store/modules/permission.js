@@ -84,11 +84,11 @@ const permission = {
             return new Promise(resolve => {
                 const {roles} = data;
                 let accessedRouters;
-                // if (roles.indexOf('admin') >= 0) {
-                //     accessedRouters = asyncRouterMap;
-                // } else {
-                    accessedRouters = filterAsyncRouter(asyncRouterMap, roles);
-                // }
+                if (roles.indexOf('admin') >= 0) {
+                    accessedRouters = asyncRouterMap;
+                } else {
+                accessedRouters = filterAsyncRouter(asyncRouterMap, roles);
+                }
 
 
                 commit('SET_ROUTERS', accessedRouters);
