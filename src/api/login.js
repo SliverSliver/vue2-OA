@@ -1,29 +1,40 @@
 import fetch from 'utils/fetch';
+import Qs from 'qs';
 
 export function loginByEmail(email, password) {
-  const data = {
-    email,
-    password
-  };
+  const data = Qs.stringify(
+      {
+        username: email,
+        password: password,
+      },
+  );
   return fetch({
-    url: '/login/loginbyemail',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    url: '/login',
     method: 'post',
     data
   });
 }
 
-export function logout() {
+export function logout(token) {
   return fetch({
-    url: '/login/logout',
-    method: 'post'
+    url: '/users',
+    method: 'delete',
+    headers: {
+      'token': token
+    }
   });
 }
 
 export function getInfo(token) {
   return fetch({
-    url: '/user/info',
+    url: '/users',
     method: 'get',
-    params: { token }
+    headers: {
+      'token': token
+    }
   });
 }
 

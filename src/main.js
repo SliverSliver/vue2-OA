@@ -12,15 +12,16 @@ import {VTable,VPagination} from 'vue-easytable'
 Vue.component(VTable.name, VTable);
 Vue.component(VPagination.name, VPagination);
 
-import './mock/index.js';  // 该项目所有请求使用mockjs模拟
-import './login.js' 
+// import './mock/index.js';  // 该项目所有请求使用mockjs模拟
+// import './mock/indexex.js';  // 该项目所有请求使用mockjs模拟
+import './login.js'
 import './ui.js'
 
 Vue.prototype.$axiso = axios;
 
 Vue.config.productionTip = false;
 
-require('./mock/index.js');
+// require('./mock/index.js');
 
 new Vue({
   el: '#app',

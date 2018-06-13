@@ -30,209 +30,208 @@
 </template>
 
 <script>
-    import {isWscnEmail} from 'utils/validate';
+  import {isWscnEmail} from 'utils/validate';
 
-    let particles;
-    let particle;
-    let camera;
-    let scene;
-    let renderer;
-    let container;
-    let SEPARATION = 100;
-    let AMOUNTX = 50;
-    let AMOUNTY = 50;
-    export default {
-        name: 'login',
-        data() {
-            const validateEmail = (rule, value, callback) => {
-                if (!isWscnEmail(value)) {
-                    callback(new Error('请输入正确的合法邮箱'));
-                } else {
-                    callback();
-                }
-            };
-            const validatePass = (rule, value, callback) => {
-                if (value.length < 6) {
-                    callback(new Error('密码不能小于6位'));
-                } else {
-                    callback();
-                }
-            };
-            return {
-                type: '',
-                type1: '登陆',
-                type2: '注册',
-                tips: '',
-                tips1: '没有账号？',
-                tips2: '已有账号？',
-                tip: '',
-                tip1: '点击注册',
-                tip2: '点击登陆',
+  let particles;
+  let particle;
+  let camera;
+  let scene;
+  let renderer;
+  let container;
+  let SEPARATION = 100;
+  let AMOUNTX = 50;
+  let AMOUNTY = 50;
+  export default {
+    name: 'login',
+    data() {
+      const validateEmail = (rule, value, callback) => {
+        if (!isWscnEmail(value)) {
+          callback(new Error('请输入正确的合法邮箱'));
+        } else {
+          callback();
+        }
+      };
+      const validatePass = (rule, value, callback) => {
+        if (value.length < 6) {
+          callback(new Error('密码不能小于6位'));
+        } else {
+          callback();
+        }
+      };
+      return {
+        type: '',
+        type1: '登陆',
+        type2: '注册',
+        tips: '',
+        tips1: '没有账号？',
+        tips2: '已有账号？',
+        tip: '',
+        tip1: '点击注册',
+        tip2: '点击登陆',
 
-                loginForm: {
-                    email: '',
-                    password: '',
-                },
-                loginRules: {
-                    email: [
-                        {required: true, trigger: 'blur', validator: validateEmail}
-                    ],
-                    password: [
-                        {required: true, trigger: 'blur', validator: validatePass}
-                    ]
-                },
-                loading: false,
-                showDialog: false
-            }
+        loginForm: {
+          email: '',
+          password: '',
         },
-        mounted() {
-            container = document.createElement('div');
-            this.$refs.can.appendChild(container);
+        loginRules: {
+          email: [
+            {required: true, trigger: 'blur', validator: validateEmail},
+          ],
+          password: [
+            {required: true, trigger: 'blur', validator: validatePass},
+          ],
+        },
+        loading: false,
+        showDialog: false,
+      };
+    },
+    mounted() {
+      container = document.createElement('div');
+      this.$refs.can.appendChild(container);
 
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
-            camera.position.z = 1000;
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
+      camera.position.z = 1000;
 
-            scene = new THREE.Scene();
+      scene = new THREE.Scene();
 
-            particles = [];
+      particles = [];
 
-            let PI2 = Math.PI * 2;
-            let material = new THREE.ParticleCanvasMaterial({
+      let PI2 = Math.PI * 2;
+      let material = new THREE.ParticleCanvasMaterial({
 
-                color: 0x0078de,
-                program: function (context) {
+        color: 0x0078de,
+        program: function(context) {
 
-                    context.beginPath();
-                    context.arc(0, 0, 1, 0, PI2, true);
-                    context.fill();
+          context.beginPath();
+          context.arc(0, 0, 1, 0, PI2, true);
+          context.fill();
 
-                }
+        },
 
+      });
+
+      let i = 0;
+
+      for (let ix = 0; ix < AMOUNTX; ix++) {
+
+        for (let iy = 0; iy < AMOUNTY; iy++) {
+
+          particle = particles[i++] = new THREE.Particle(material);
+          particle.position.x = ix * SEPARATION - ((AMOUNTX * SEPARATION) / 2);
+          particle.position.z = iy * SEPARATION - ((AMOUNTY * SEPARATION) / 2);
+          scene.add(particle);
+
+        }
+
+      }
+
+      renderer = new THREE.CanvasRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      container.appendChild(renderer.domElement);
+
+      document.addEventListener('mousemove', onDocumentMouseMove, false);
+
+      window.addEventListener('resize', onWindowResize, false);
+
+      animate();
+    },
+    methods: {
+      handleLogin() {
+        this.$refs.loginForm.validate(valid => {
+          if (valid) {
+            this.loading = true;
+            this.$store.dispatch('LoginByEmail', this.loginForm).then(() => {
+              this.$Message.success('登录成功');
+
+              this.loading = false;
+              this.$router.push({path: '/'});
+            }).catch(err => {
+              this.$Message.error(err);
+              this.loading = false;
             });
-
-            let i = 0;
-
-            for (let ix = 0; ix < AMOUNTX; ix++) {
-
-                for (let iy = 0; iy < AMOUNTY; iy++) {
-
-                    particle = particles[i++] = new THREE.Particle(material);
-                    particle.position.x = ix * SEPARATION - ((AMOUNTX * SEPARATION) / 2);
-                    particle.position.z = iy * SEPARATION - ((AMOUNTY * SEPARATION) / 2);
-                    scene.add(particle);
-
-                }
-
-            }
-
-            renderer = new THREE.CanvasRenderer();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            container.appendChild(renderer.domElement);
-
-            document.addEventListener('mousemove', onDocumentMouseMove, false);
-            //
-
-            window.addEventListener('resize', onWindowResize, false);
-
-            animate();
-        },
-        methods: {
-            handleLogin() {
-                this.$refs.loginForm.validate(valid => {
-                    if (valid) {
-                        this.loading = true;
-                        this.$store.dispatch('LoginByEmail', this.loginForm).then(() => {
-                            this.$Message.success('登录成功');
-
-                            this.loading = false;
-                            this.$router.push({ path: '/' });
-                        }).catch(err => {
-                            this.$Message.error(err);
-                            this.loading = false;
-                        });
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
-            },
-            change() {
-                if (this.type === this.type1) {
-                    this.type = this.type2;
-                    this.tips = this.tips2;
-                    this.tip = this.tip2;
-                } else {
-                    this.type = this.type1;
-                    this.tips = this.tips1;
-                    this.tip = this.tip1;
-                }
-            }
-        },
-        created() {
-            this.type = this.type1;
-            this.tips = this.tips1;
-            this.tip = this.tip1;
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      change() {
+        if (this.type === this.type1) {
+          this.type = this.type2;
+          this.tips = this.tips2;
+          this.tip = this.tip2;
+        } else {
+          this.type = this.type1;
+          this.tips = this.tips1;
+          this.tip = this.tip1;
         }
+      },
+    },
+    created() {
+      this.type = this.type1;
+      this.tips = this.tips1;
+      this.tip = this.tip1;
+    },
+  };
+
+  let count = 0;
+
+  let mouseX = 0, mouseY = 0;
+
+  let windowHalfX = window.innerWidth / 2;
+  let windowHalfY = window.innerHeight / 2;
+
+  function onWindowResize() {
+
+    windowHalfX = window.innerWidth / 2;
+    windowHalfY = window.innerHeight / 2;
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+  }
+
+  function onDocumentMouseMove(event) {
+
+    mouseX = event.clientX - windowHalfX;
+    mouseY = event.clientY - windowHalfY;
+
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+
+    render();
+  }
+
+  function render() {
+
+    camera.position.x += (mouseX - camera.position.x) * .05;
+    camera.position.y += (-mouseY - camera.position.y) * .05;
+    camera.lookAt(scene.position);
+
+    let i = 0;
+
+    for (let ix = 0; ix < AMOUNTX; ix++) {
+
+      for (let iy = 0; iy < AMOUNTY; iy++) {
+
+        particle = particles[i++];
+        particle.position.y = (Math.sin((ix + count) * 0.3) * 50) + (Math.sin((iy + count) * 0.5) * 50);
+        particle.scale.x = particle.scale.y = (Math.sin((ix + count) * 0.3) + 1) * 2 +
+            (Math.sin((iy + count) * 0.5) + 1) * 2;
+
+      }
+
     }
 
+    renderer.render(scene, camera);
 
-    let count = 0;
+    count += 0.1;
 
-    let mouseX = 0, mouseY = 0;
-
-    let windowHalfX = window.innerWidth / 2;
-    let windowHalfY = window.innerHeight / 2;
-
-    function onWindowResize() {
-
-        windowHalfX = window.innerWidth / 2;
-        windowHalfY = window.innerHeight / 2;
-
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-
-        renderer.setSize(window.innerWidth, window.innerHeight);
-
-    }
-
-    function onDocumentMouseMove(event) {
-
-        mouseX = event.clientX - windowHalfX;
-        mouseY = event.clientY - windowHalfY;
-
-    }
-
-    function animate() {
-        requestAnimationFrame(animate);
-
-        render();
-    }
-
-    function render() {
-
-        camera.position.x += (mouseX - camera.position.x) * .05;
-        camera.position.y += (-mouseY - camera.position.y) * .05;
-        camera.lookAt(scene.position);
-
-        let i = 0;
-
-        for (let ix = 0; ix < AMOUNTX; ix++) {
-
-            for (let iy = 0; iy < AMOUNTY; iy++) {
-
-                particle = particles[i++];
-                particle.position.y = (Math.sin((ix + count) * 0.3) * 50) + (Math.sin((iy + count) * 0.5) * 50);
-                particle.scale.x = particle.scale.y = (Math.sin((ix + count) * 0.3) + 1) * 2 + (Math.sin((iy + count) * 0.5) + 1) * 2;
-
-            }
-
-        }
-
-        renderer.render(scene, camera);
-
-        count += 0.1;
-
-    }
+  }
 </script>
 <style>
     .login-container a {

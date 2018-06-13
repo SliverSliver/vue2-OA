@@ -63,7 +63,7 @@ Mock.mock(/\/login/, 'post', function () {
     return {
         "code": 200,
         "data": {
-            "root": 0,
+            "root": 100,
             "token": "ee0f8743817a453a8d4c6e687102457e"
         },
         "msg": "success"

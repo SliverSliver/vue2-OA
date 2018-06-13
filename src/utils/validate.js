@@ -4,7 +4,8 @@
 /* 是否是公司邮箱*/
 export function isWscnEmail(str) {
   const reg = /^[a-z0-9](?:[-_.+]?[a-z0-9]+)*@oa\.com$/i;
-  return reg.test(str.trim());
+  // return reg.test(str.trim());
+  return true;
 }
 
 /* 合法uri*/

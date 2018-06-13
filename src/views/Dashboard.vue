@@ -33,53 +33,57 @@
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-                columns: [
-                    {
-                        title: '日期',
-                        key: 'date'
-                    },
-                    {
-                        title: '签到时间',
-                        key: 'start'
-                    },
-                    {
-                        title: '签退时间',
-                        key: 'end'
-                    }
-                ],
-                inforList: []
-            }
+  export default {
+    data() {
+      return {
+        columns: [
+          {
+            title: '日期',
+            key: 'year',
+          },
+          {
+            title: '签到时间',
+            key: 'beginTime',
+          },
+          {
+            title: '签退时间',
+            key: 'endTime',
+          },
+        ],
+        inforList: [],
+      };
+    },
+    methods: {
+      test_logout() {
+        this.$store.dispatch('LogOut').then(() => {
+          this.$router.push({path: '/login'});
+        }).catch(err => {
+          this.$message.error(err);
+        });
+      },
+    },
+    created() {
+      let that = this;
+      this.$axiso.get('http://localhost:8081/attendances/', {
+        headers: {
+          'token': this.$store.getters.token,
         },
-        methods: {
-            test_logout() {
-                this.$store.dispatch('LogOut').then(() => {
-                    this.$router.push({path: '/login'});
-                }).catch(err => {
-                    this.$message.error(err);
-                });
-            }
-        },
-        created() {
-            let that = this;
-
-            this.$axiso.get('/api/getDate').then((response) => {
-                let data = response.data;
-
-                that.inforList = data.inforList;
-
-                console.log(data.inforList);
-            }).catch((error) => {
-                console.log(error)
-            });
-        },
-        mounted() {
-            const token = this.$store.getters.token;
-
+        withCredentials: true,
+      }).then((response) => {
+        let data = response.data.data;
+        for (let key in data) {
+          data[key].year = data[key].year + '-' + data[key].month + '-' + data[key].day;
         }
-    }
+        that.inforList = data;
+        console.log(data);
+      }).catch((error) => {
+        console.log(error);
+      });
+    },
+    mounted() {
+      const token = this.$store.getters.token;
+    },
+  };
 </script>
 
 <style type="text/css" scoped>
