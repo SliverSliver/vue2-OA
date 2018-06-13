@@ -27,12 +27,7 @@
     export default {
         data() {
             return {
-                tableData: [
-                    {"username":"赵伟","beginDate":"156*****1987","endDate":"钢琴、书法、唱歌"},
-                    {"username":"李伟","beginDate":"182*****1538","endDate":"钢琴、书法、唱歌"},
-                    {"username":"孙伟","beginDate":"161*****0097","endDate":"钢琴、书法、唱歌"},
-                    {"username":"周伟","beginDate":"197*****1123","endDate":"钢琴、书法、唱歌"},
-                ],
+                tableData: [],
 
                 columnss: [
                     {
@@ -60,6 +55,22 @@
                         isResize: true
                     },
                     {
+                        field: 'type',
+                        title: '申请类型',
+                        width: 80,
+                        titleAlign: 'center',
+                        columnAlign: 'center',
+                        isResize: true
+                    },
+                    {
+                        field: 'result',
+                        title: '目前状态',
+                        width: 80,
+                        titleAlign: 'center',
+                        columnAlign: 'center',
+                        isResize: true
+                    },
+                    {
                         field: 'custome-adv',
                         title: '操作',
                         width: 200,
@@ -74,55 +85,92 @@
         components: {},
         methods: {
             customCompFunc(params) {
+                this.loading = true;
                 console.log(params);
-                if (params.type === 'delete'){ // do delete operation
-
-                    this.$delete(this.tableData,params.index);
-
-                }else if (params.type === 'edit'){ // do edit operation
-
-                    alert(`行号：${params.index} 姓名：${params.rowData['name']}`)
+                let type;
+                if (params.type === 'agree') { // do delete operation
+                    type = 1;
+                } else if (params.type === 'disagree') { // do edit operation
+                    type = 2;
                 }
-                // if (params.type === 'delete') { // do delete operation
 
-                // } else if (params.type === 'edit') { // do edit operation
+                this.$axiso.get('http://localhost:8081/admin/applications/' + params.rowData.id + '/' + params.rowData.type, {
+                    headers: {
+                        'token': this.$store.getters.token,
+                    },
+                    withCredentials: true,
+                }).then((response) => {
 
-                // }
+                    let data = response.data;
+
+                    if (data.code === 200) {
+                        this.$Message.success('修改成功');
+                    } else {
+                        this.$Message.success('修改失败');
+                    }
+
+                    this.loading = false;
+
+                    console.log(data, 'data');
+
+                }).catch((err) => {
+                    this.$Message.error(err);
+                    this.loading = false;
+                });
+
             }
         },
         created() {
             let that = this;
 
-            this.$axiso.get('/admin/applications').then((response) => {
-
+            this.$axiso.get('http://localhost:8081/admin/applications', {
+                headers: {
+                    'token': this.$store.getters.token,
+                },
+                withCredentials: true,
+            }).then((response) => {
                 let data = response.data.data;
 
-                console.log(data.length, 'data');
+                for (k in data) {
+                    switch (data[k].type) {
+                        case 1:
+                            data[k].type = '请假';
+                            break;
+                        case 2:
+                            data[k].type = '出差';
+                            break;
+                        case 3:
+                            data[k].type = '加班';
+                            break;
+                    }
+                    switch (data[k].result) {
+                        case 0:
+                            data[k].result = '待审核';
+                            break;
+                        case 1:
+                            data[k].result = '已通过';
+                            break;
+                        case 2:
+                            data[k].result = '未通过';
+                            break;
+                    }
 
-                for (let k in data) {
-                    console.log(k, 'k');
-                    // that.tableData.push(data[k].user.username, data[k].application.beginDate, data[k].application.endDate);
-                    // that.tableData[k].username = data[k].user.username;
+                    that.tableData = data;
 
-                    console.log(data[k].user.username, 'username', k);
+                    console.log(data, 'data');
                 }
-                // that.tableData = data.data;
-
-
             }).catch((error) => {
                 console.log(error)
             });
-
         }
     }
 
     // 自定义列组件
     Vue.component('application-operation', {
         template:
-            `<span>        <a href="" @click.stop.prevent="update(rowData,index)">编辑</a>&nbsp;
-        <a href="" @click.stop.prevent="deleteRow(rowData,index)">删除</a>
-            <!--<a href="" @click.stop.prevent="agree(rowData,index)">同意</a>&nbsp;-->
-            <!--<a href="" @click.stop.prevent="disagree(rowData,index)">拒绝</a>-->
+            `<span>
+                <a href="" @click.stop.prevent="update(rowData,index)">同意</a>&nbsp;
+                <a href="" @click.stop.prevent="deleteRow(rowData,index)">拒绝</a>
             </span>`,
         props: {
             rowData: {
@@ -136,28 +184,18 @@
             }
         },
         methods: {
-            update(){
-
+            update() {
                 // 参数根据业务场景随意构造
-                let params = {type:'edit',index:this.index,rowData:this.rowData};
-                this.$emit('on-custom-comp',params);
+                let params = {type: 'agree', index: this.index, rowData: this.rowData};
+                this.$emit('on-custom-comp', params);
             },
 
-            deleteRow(){
-
+            deleteRow() {
                 // 参数根据业务场景随意构造
-                let params = {type:'delete',index:this.index};
-                this.$emit('on-custom-comp',params);
+                let params = {type: 'disagree', index: this.index, rowData: this.rowData};
+                this.$emit('on-custom-comp', params);
 
             }
-            // agree() {
-            //     let params = {type: 'agree', rowData: this.rowData};
-            //     this.$emit('on-custom-comp', params);
-            // },
-            // disagree() {
-            //     let params = {type: 'disagree', rowData: this.rowData};
-            //     this.$emit('on-custom-comp', params);
-            // },
         }
     })
 </script>
