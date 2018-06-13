@@ -136,11 +136,15 @@
           },
           withCredentials: true,
         }).then((response) => {
-          let data = response.data.data;
-          for (let key in data) {
-            data[key].year = data[key].year + '-' + data[key].month + '-' + data[key].day;
+          if (response.data.code === 200) {
+            let data = response.data.data;
+            for (let key in data) {
+              data[key].year = data[key].year + '-' + data[key].month + '-' + data[key].day;
+            }
+            this.inforList = data;
+          } else {
+            this.$Message.error(response.data.msg);
           }
-          this.inforList = data;
           console.log(data);
         }).catch((error) => {
           console.log(error);

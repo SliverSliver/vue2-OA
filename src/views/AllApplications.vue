@@ -86,38 +86,38 @@
     methods: {
       customCompFunc(params) {
         this.loading = true;
-        if (params.rowData.result != '待审核') {
-            this.$Message.success('已审核，操作无效！');
+        if (params.rowData.result !== '待审核') {
+          this.$Message.success('已审核，操作无效！');
         } else {
-            let type;
-            if (params.type === 'agree') { // do delete operation
-                type = 1;
-            } else if (params.type === 'disagree') { // do edit operation
-                type = 2;
-            }
-
-            this.$axiso.put('http://localhost:8081/admin/applications/' + params.rowData.id + '/' + type, {}, {
-                headers: {
-                    'token': this.$store.getters.token,
-                },
-                withCredentials: true,
-            }).then((response) => {
-
-          let data = response.data;
-          if (data.code === 200) {
-            this.$Message.success('修改成功');
-          } else {
-            this.$Message.success('修改失败');
+          let type;
+          if (params.type === 'agree') { // do delete operation
+            type = 1;
+          } else if (params.type === 'disagree') { // do edit operation
+            type = 2;
           }
 
-                this.loading = false;
+          this.$axiso.put('http://localhost:8081/admin/applications/' + params.rowData.id + '/' + type, {}, {
+            headers: {
+              'token': this.$store.getters.token,
+            },
+            withCredentials: true,
+          }).then((response) => {
 
-                console.log(data, 'data');
+            let data = response.data;
+            if (data.code === 200) {
+              this.$Message.success('修改成功');
+            } else {
+              this.$Message.error(data.msg);
+            }
 
-            }).catch((err) => {
-                this.$Message.error(err);
-                this.loading = false;
-            });
+            this.loading = false;
+
+            console.log(data, 'data');
+
+          }).catch((err) => {
+            this.$Message.error(err);
+            this.loading = false;
+          });
         }
 
       },
@@ -131,32 +131,36 @@
         },
         withCredentials: true,
       }).then((response) => {
-        let data = response.data.data;
-        for (let k in data) {
-          switch (data[k].type) {
-            case 1:
-              data[k].type = '请假';
-              break;
-            case 2:
-              data[k].type = '出差';
-              break;
-            case 3:
-              data[k].type = '加班';
-              break;
-          }
-          switch (data[k].result) {
-            case 0:
-              data[k].result = '待审核';
-              break;
-            case 1:
-              data[k].result = '已通过';
-              break;
-            case 2:
-              data[k].result = '未通过';
-              break;
-          }
+        if (response.data.code === 200) {
+          let data = response.data.data;
+          for (let k in data) {
+            switch (data[k].type) {
+              case 1:
+                data[k].type = '请假';
+                break;
+              case 2:
+                data[k].type = '出差';
+                break;
+              case 3:
+                data[k].type = '加班';
+                break;
+            }
+            switch (data[k].result) {
+              case 0:
+                data[k].result = '待审核';
+                break;
+              case 1:
+                data[k].result = '已通过';
+                break;
+              case 2:
+                data[k].result = '未通过';
+                break;
+            }
 
-          that.tableData = data;
+            that.tableData = data;
+          }
+        } else {
+          this.$Message.error(response.data.msg);
         }
       }).catch((error) => {
         console.log(error);
