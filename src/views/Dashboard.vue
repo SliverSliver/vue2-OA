@@ -10,10 +10,10 @@
 
         <Row class="text-center">
 
-            <Button type="success" shape="circle" size="large" long disabled="disabled1">签到</Button>
+            <Button type="success" shape="circle" size="large" long disabled="disabled1" @click="attendances1">签到</Button>
             <br/>
             <br/>
-            <Button type="error" shape="circle" size="large" long disabled="disabled2">签退</Button>
+            <Button type="error" shape="circle" size="large" long disabled="disabled2" @click="attendances2">签退</Button>
 
         </Row>
 
@@ -61,7 +61,44 @@
                     this.$message.error(err);
                 });
             },
+
+            attendances1() {
+                this.$axiso.put('http://localhost:8081/attendances', {
+                    headers: {
+                        'token': this.$store.getters.token,
+                    },
+                    withCredentials: true,
+                }).then((response) => {
+                    let data = response.data;
+                    if (data.code === 200) {
+                        this.$Message.success('签到成功');
+                        this.disabled1 = true
+                    }
+                    console.log(data);
+                }).catch((error) => {
+                    console.log(error);
+                });
+            },
+
+            attendances2() {
+                this.$axiso.delete('http://localhost:8081/attendances', {
+                    headers: {
+                        'token': this.$store.getters.token,
+                    },
+                    withCredentials: true,
+                }).then((response) => {
+                    let data = response.data;
+                    if (data.code === 200) {
+                        this.$Message.success('签退成功');
+                        this.disabled1 = true
+                    }
+                    console.log(data);
+                }).catch((error) => {
+                    console.log(error);
+                });
+
         },
+
         created() {
             let that = this;
 
