@@ -100,8 +100,7 @@
           withCredentials: true,
         }).then((response) => {
 
-          let data = response.data.data;
-
+          let data = response.data;
           if (data.code === 200) {
             this.$Message.success('修改成功');
           } else {
