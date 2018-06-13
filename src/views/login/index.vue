@@ -173,16 +173,16 @@
             this.tips = this.tips1;
             this.tip = this.tip1;
 
-            if (this.$route.params.isReload) {
-                this.isReload = true
-            } else {
-                this.$router.push({
-                    path: '/',
-                    params: {
-                        isReload: true,
-                    }
-                });
-            }
+            // if (this.$route.params.isReload != null && this.$route.params.isReload) {
+            //     this.isReload = true
+            // } else {
+            //     this.$router.push({
+            //         path: '/',
+            //         params: {
+            //             isReload: true,
+            //         }
+            //     });
+            // }
         },
     };
 
