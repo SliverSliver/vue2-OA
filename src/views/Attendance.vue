@@ -2,13 +2,6 @@
     <div class="content">
 
         <Row>
-            <!-- agoDayHide='1517483961' -->
-            <!-- futureDayHide="1526054400" -->
-            <!-- isHideOtherday=false -->
-            <Calendar ref="Calendar" :markDateMore="arr"></Calendar>
-        </Row>
-
-        <Row>
             <Col>
                 <h5>近期考勤统计</h5>
             </Col>
@@ -37,6 +30,7 @@
                     }
                 ],
                 inforList: [],
+
             }
         },
         components: {
@@ -47,11 +41,6 @@
         created() {
             let that = this;
 
-            function format(date, index) {
-                date = new Date(date);
-                return `${date.getFullYear()}/${date.getMonth() + 1}/${index}`;
-            }
-
             this.$axiso.get('/api/getCount').then((response) => {
                 let data = response.data;
 
@@ -61,23 +50,6 @@
             }).catch((error) => {
                 console.log(error)
             });
-
-            this.arr = [{
-                date: format(new Date(), 1),
-                className: "mark1"
-            }, {
-                date: format(new Date(), 4),
-                className: "mark1"
-            }, {
-                date: format(new Date(), 5),
-                className: "mark1"
-            }, {
-                date: format(new Date(), 6),
-                className: "mark1"
-            }, {
-                date: format(new Date(), 7),
-                className: "mark2"
-            }]
         }
 
     }

@@ -23,72 +23,98 @@
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-                username: '',
+  export default {
+    data() {
+      return {
+        username: '',
 
-                columns: [
-                    {
-                        title: '类别',
-                        key: 'type'
-                    },
-                    {
-                        title: '次数',
-                        key: 'time'
-                    }
-                ],
-                inforList: [],
+        columns: [
+          {
+            title: '类别',
+            key: 'type',
+          },
+          {
+            title: '次数',
+            key: 'time',
+          },
+        ],
+        inforList: [
+          {
+            type: '缺勤',
+            time: ''
+          }, {
+            type: '出勤',
+            time: ''
+          }, {
+            type: '请假',
+            time: ''
+          }, {
+            type: '早退',
+            time: ''
+          }, {
+            type: '出差',
+            time: ''
+          }
+        ],
 
+        columns1: [
+          {
+            title: '日期',
+            key: 'year',
+          },
+          {
+            title: '签到时间',
+            key: 'beginTime',
+          },
+          {
+            title: '签退时间',
+            key: 'endTime',
+          },
+        ],
+        inforList1: [],
+      };
+    },
+    components: {},
+    methods: {},
+    created() {
+      let that = this;
 
-                columns1: [
-                    {
-                        title: '日期',
-                        key: 'date'
-                    },
-                    {
-                        title: '签到时间',
-                        key: 'start'
-                    },
-                    {
-                        title: '签退时间',
-                        key: 'end'
-                    }
-                ],
-                inforList1: []
-            }
+      // 将数据放在当前组件的数据内
+      this.username = this.$route.params.data.username;
+      // console.log(this.$route.params.data.username, 'data');
+
+      this.$axiso.get('http://localhost:8081/admin/attendances/' + this.$route.params.data.id, {
+        headers: {
+          'token': this.$store.getters.token,
         },
-        components: {},
-        methods: {
-        },
-        created() {
-            let that = this;
-
-            // 将数据放在当前组件的数据内
-            this.username = this.$route.params.data.username;
-            // console.log(this.$route.params.data.username, 'data');
-
-            this.$axiso.get('/api/getCount').then((response) => {
-                let data = response.data;
-
-                that.inforList = data.inforList;
-
-                console.log(data.inforList);
-            }).catch((error) => {
-                console.log(error)
-            });
-
-            this.$axiso.get('/api/getDate').then((response) => {
-                let data = response.data;
-
-                that.inforList1 = data.inforList;
-
-                console.log(data.inforList);
-            }).catch((error) => {
-                console.log(error)
-            });
+        withCredentials: true,
+      }).then((response) => {
+        let data = response.data.data;
+        for (let key in data) {
+          data[key].year = data[key].year + '-' + data[key].month + '-' + data[key].day;
         }
-    }
+        that.inforList1 = data;
+      }).catch((error) => {
+        console.log(error);
+      });
+
+      this.$axiso.get('http://localhost:8081/admin/count/' + this.$route.params.data.id, {
+        headers: {
+          'token': this.$store.getters.token,
+        },
+        withCredentials: true,
+      }).then((response) => {
+        let data = response.data.data;
+        this.inforList[0].time = data.absenceDays;
+        this.inforList[1].time = data.attendanceDays;
+        this.inforList[2].time = data.leaveDays;
+        this.inforList[3].time = data.leaveEarlyDays;
+        this.inforList[4].time = data.travelingDays;
+      }).catch((error) => {
+        console.log(error);
+      });
+    },
+  };
 </script>
 
 <!-- Add "scoped " attribute to limit CSS to this component only -->

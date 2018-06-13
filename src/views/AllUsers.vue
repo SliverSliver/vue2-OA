@@ -53,7 +53,7 @@
         components: {},
         methods: {
             customCompFunc(params) {
-                console.log(params);
+                console.log(params, 'param');
                 this.$router.push({
                     path: '/userInfo',
                     name: '出勤记录',
@@ -66,7 +66,12 @@
         created() {
             let that = this;
 
-            this.$axiso.get('/admin/users').then((response) => {
+            this.$axiso.get('http://localhost:8081/admin/users', {
+              headers: {
+                'token': this.$store.getters.token,
+              },
+              withCredentials: true,
+            }).then((response) => {
 
                 let data = response.data;
                 that.tableData = data.data;
@@ -99,7 +104,7 @@
         },
         methods: {
             update() {
-                let params = {type: 'view', rowData: this.rowData};
+                let params = {type: 'view', rowData: this.rowData, index: this.index};
                 this.$emit('on-custom-comp', params);
             },
         }
