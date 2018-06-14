@@ -3,61 +3,19 @@ import Cookies from 'js-cookie';
 
 const user = {
       state: {
-        user: localStorage.getItem('user'),
-        status: localStorage.getItem('status'),
-        email: localStorage.getItem('email'),
-        code: localStorage.getItem('code'),
-        uid: undefined,
-        auth_type: localStorage.getItem('auth_type'),
-        token: localStorage.getItem('token'),
-        name: localStorage.getItem('name'),
-        avatar: localStorage.getItem('avatar'),
-        introduction: localStorage.getItem('introduction'),
-        roles: [],
+        token: '',
+        roles: '',
         setting: {
           articlePlatform: [],
         },
       },
 
       mutations: {
-        SET_AUTH_TYPE: (state, type) => {
-          state.auth_type = type;
-        },
-        SET_CODE: (state, code) => {
-          state.code = code;
-        },
         SET_TOKEN: (state, token) => {
           state.token = token;
         },
-        SET_UID: (state, uid) => {
-          state.uid = uid;
-        },
-        SET_EMAIL: (state, email) => {
-          state.email = email;
-        },
-        SET_INTRODUCTION: (state, introduction) => {
-          state.introduction = introduction;
-        },
-        SET_SETTING: (state, setting) => {
-          state.setting = setting;
-        },
-        SET_STATUS: (state, status) => {
-          state.status = status;
-        },
-        SET_NAME: (state, name) => {
-          state.name = name;
-        },
-        SET_AVATAR: (state, avatar) => {
-          state.avatar = avatar;
-        },
         SET_ROLES: (state, roles) => {
           state.roles = roles;
-        },
-        LOGIN_SUCCESS: () => {
-          console.log('login success');
-        },
-        LOGOUT_USER: state => {
-          state.user = '';
         },
       },
 
@@ -92,6 +50,7 @@ const user = {
                 roles = 'normal';
                 // commit('SET_ROLES', 'normal');
               }
+              localStorage.setItem('roles', roles);
               commit('SET_ROLES', roles);
               // commit('SET_NAME', data.name);
               // commit('SET_AVATAR', data.avatar);
@@ -124,10 +83,12 @@ const user = {
         LogOut({commit, state}) {
           return new Promise((resolve, reject) => {
             logout(state.token).then(() => {
-              // commit('SET_TOKEN', '');
-              commit('SET_ROLES', []);
+              commit('SET_TOKEN', '');
+              commit('SET_ROLES', '');
               // Cookies.remove('Admin-Token');
-              localStorage.clear();
+              localStorage.removeItem('token');
+              localStorage.removeItem('roles');
+              // Cookies.clear();
               resolve();
             }).catch(error => {
               reject(error);
@@ -138,15 +99,27 @@ const user = {
         // 前端 登出
         FedLogOut({commit}) {
           return new Promise(resolve => {
-            // commit('SET_TOKEN', '');
-            commit('SET_ROLES', []);
+            commit('SET_TOKEN', '');
+            commit('SET_ROLES', '');
             // Cookies.remove('Admin-Token');
-            localStorage.clear();
-            alert('has logout');
+            localStorage.removeItem('token');
+            localStorage.removeItem('roles');
+            alert('已登出');
             resolve();
           });
-        }
-        ,
+        },
+
+        // 刷新用户状态
+        Flash_UserInfo({commit, state}) {
+          return new Promise((resolve, reject) => {
+              commit('SET_TOKEN', localStorage.getItem('token'));
+              commit('SET_ROLES', localStorage.getItem('roles'));
+              // Cookies.remove('Admin-Token');
+              // Cookies.get('token');
+              // Cookies.clear();
+              resolve(localStorage.getItem('token'));
+          });
+        },
       },
     }
 ;

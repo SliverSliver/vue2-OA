@@ -87,7 +87,7 @@
       customCompFunc(params) {
         this.loading = true;
         if (params.rowData.result !== '待审核') {
-          this.$Message.success('已审核，操作无效！');
+          alert('已审核，操作无效！');
         } else {
           let type;
           if (params.type === 'agree') { // do delete operation

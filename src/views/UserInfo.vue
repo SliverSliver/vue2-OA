@@ -12,7 +12,7 @@
 
         <Row>
             <Col>
-                <h5>{{username}}近期考勤统计</h5>
+                <h5>{{username}}近期考勤统计（不含当天）</h5>
             </Col>
             <Col>
                 <Table :columns="columns" :data="inforList"></Table>

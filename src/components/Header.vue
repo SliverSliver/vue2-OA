@@ -37,9 +37,10 @@
       Logout(e) {
         e.preventDefault();
         this.$store.dispatch('LogOut').then(() => {
-          this.$router.push({path: '/login'});
+          window.location.reload();
+          // this.$router.push({path: '/login'});
         }).catch(err => {
-          this.$message.error(err);
+          this.$Message.error(err);
         });
       },
       click() {
@@ -56,6 +57,16 @@
         document.body.classList.toggle('sidebar-mobile-show');
       },
     },
+
+    created() {
+      if (this.$$state.token == null) {
+        this.$store.dispatch('Flash_UserInfo').then(res => {
+          console.log(res);
+        }).catch(err => {
+          this.$Message.error(err);
+        });
+      }
+    }
   };
 </script>
 

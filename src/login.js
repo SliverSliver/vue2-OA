@@ -34,7 +34,8 @@ router.beforeEach((to, from, next) => {
         }).catch(error => {
           console.log(error);
           store.dispatch('FedLogOut').then(() => {
-            next({path: '/login'});
+            window.location.reload();
+            // next({path: '/login'});
           });
         });
       } else {

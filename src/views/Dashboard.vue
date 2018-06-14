@@ -21,7 +21,7 @@
 
         <Row>
             <Col>
-                <h5>近期出勤情况</h5>
+                <h5>近期出勤情况（不含当天）</h5>
             </Col>
             <Col>
                 <Table :columns="columns" :data="inforList"></Table>
@@ -56,14 +56,6 @@
       };
     },
     methods: {
-      test_logout() {
-        this.$store.dispatch('LogOut').then(() => {
-          this.$router.push({path: '/login'});
-        }).catch(err => {
-          this.$message.error(err);
-        });
-      },
-
       attendances1() {
         this.$axiso.put('http://localhost:8081/attendances', {}, {
           headers: {
