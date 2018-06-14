@@ -78,8 +78,6 @@
         } else {
           this.$Message.error(response.data.msg);
         }
-        console.log(data, 'data');
-
       }).catch((error) => {
         console.log(error);
       });

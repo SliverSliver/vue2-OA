@@ -2,7 +2,6 @@
   "name": "OA",
   "version": "1.0.0",
   "description": "OA base on Vue.js",
-  "author": "herozhou <zhouhero@hotmail.com>",
   "license": "MIT",
   "private": false,
   "scripts": {

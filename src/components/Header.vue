@@ -59,13 +59,13 @@
     },
 
     created() {
-      if (this.$$state.token == null) {
-        this.$store.dispatch('Flash_UserInfo').then(res => {
-          console.log(res);
-        }).catch(err => {
-          this.$Message.error(err);
-        });
-      }
+      // if (this.$$state.token == null) {
+      //   this.$store.dispatch('Flash_UserInfo').then(res => {
+      //     console.log(res);
+      //   }).catch(err => {
+      //     this.$Message.error(err);
+      //   });
+      // }
     }
   };
 </script>

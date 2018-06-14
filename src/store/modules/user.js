@@ -1,9 +1,8 @@
 import {loginByEmail, logout, getInfo} from '../../api/login';
-import Cookies from 'js-cookie';
 
 const user = {
       state: {
-        token: '',
+        token: localStorage.getItem('token'),
         roles: '',
         setting: {
           articlePlatform: [],
