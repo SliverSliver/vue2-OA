@@ -55,8 +55,8 @@ module.exports = {
             },
             {
                 test: /\.js$/,
-                loader: 'babel-loader?cacheDirectory',
-                include: [resolve('src'), resolve('test'), resolve('src/utils/fetch.js')]
+                loader: 'babel-loader',//?cacheDirectory
+                include: [resolve('src'), resolve('test'),resolve('src/utils')]
             },
             {
                 test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
